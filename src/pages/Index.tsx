@@ -24,9 +24,35 @@ import {
 import { Button } from "@/components/ui/button";
 import Icon from "@/components/ui/icon";
 
+interface Message {
+  id: number;
+  name: string;
+  avatar: string;
+  color: string;
+  text: string;
+  time: string;
+}
+
 const Index = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [inputText, setInputText] = useState("");
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 1, name: "Мама", avatar: "👩", color: "from-pink-500 to-rose-500", text: "Дети, как вы там? Уже пообедали? ❤️", time: "12:05" },
+    { id: 2, name: "Сын Дима", avatar: "👦", color: "from-blue-500 to-cyan-500", text: "Да, мам, всё хорошо! Уже пообедал 😊 Приеду в субботу, привезу подарки!", time: "12:08" },
+    { id: 3, name: "Подруга Наташа", avatar: "👩‍🦰", color: "from-violet-500 to-purple-500", text: "Девочки, сделала ремонт! Смотрите как красиво получилось 🏠✨", time: "12:15" },
+  ]);
+
+  const sendMessage = () => {
+    if (!inputText.trim()) return;
+    const now = new Date();
+    const time = `${now.getHours()}:${String(now.getMinutes()).padStart(2, "0")}`;
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), name: "Вы", avatar: "😊", color: "from-green-500 to-teal-500", text: inputText.trim(), time },
+    ]);
+    setInputText("");
+  };
 
   return (
     <div className="min-h-screen bg-[#36393f] text-white overflow-x-hidden">
@@ -219,18 +245,31 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Сообщение мамы */}
+              {/* Динамические сообщения */}
+              {messages.map((msg) => (
+              <div key={msg.id} className="flex gap-2 sm:gap-4">
+                <div className={`w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r ${msg.color} rounded-full flex items-center justify-center flex-shrink-0 text-sm`}>
+                  {msg.avatar}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-baseline gap-2 mb-1">
+                    <span className="text-white font-medium text-sm sm:text-base">{msg.name}</span>
+                    <span className="text-[#72767d] text-xs hidden sm:inline">Сегодня в {msg.time}</span>
+                  </div>
+                  <div className="text-[#dcddde] text-sm sm:text-base">{msg.text}</div>
+                </div>
+              </div>
+              ))}
+
+              {/* Карточка профиля мамы (статичная) */}
               <div className="flex gap-2 sm:gap-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-xs sm:text-sm font-medium">М</span>
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-pink-500 to-rose-500 rounded-full flex items-center justify-center flex-shrink-0 text-sm">
+                  👩
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline gap-2 mb-1">
                     <span className="text-white font-medium text-sm sm:text-base">Мама</span>
-                    <span className="text-[#72767d] text-xs hidden sm:inline">Сегодня в 12:05</span>
-                  </div>
-                  <div className="text-[#dcddde] mb-3 text-sm sm:text-base">
-                    Дети, как вы там? Уже пообедали? ❤️
+                    <span className="text-[#72767d] text-xs hidden sm:inline">Профиль</span>
                   </div>
 
                   {/* Карточка статуса */}
@@ -299,47 +338,6 @@ const Index = () => {
                 </div>
               </div>
 
-              {/* Сообщение сына */}
-              <div className="flex gap-2 sm:gap-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-xs sm:text-sm font-medium">С</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-white font-medium text-sm sm:text-base">Сын Дима</span>
-                    <span className="text-[#72767d] text-xs hidden sm:inline">Сегодня в 12:08</span>
-                  </div>
-                  <div className="text-[#dcddde] mb-2 text-sm sm:text-base">
-                    Да, мам, всё хорошо! Уже пообедал 😊 Приеду в субботу, привезу подарки!
-                  </div>
-                  <div className="text-[#dcddde] text-sm sm:text-base">
-                    Кстати, видел как папа поставил фото с рыбалки 😄
-                  </div>
-                </div>
-              </div>
-
-              {/* Сообщение подруги */}
-              <div className="flex gap-2 sm:gap-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-violet-500 to-purple-500 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-xs sm:text-sm font-medium">Н</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-white font-medium text-sm sm:text-base">Подруга Наташа</span>
-                    <span className="text-[#72767d] text-xs hidden sm:inline">Сегодня в 12:15</span>
-                  </div>
-                  <div className="text-[#dcddde] mb-3 text-sm sm:text-base">
-                    Девочки, сделала ремонт! Смотрите как красиво получилось 🏠✨
-                  </div>
-                  <div className="bg-[#2f3136] rounded-lg p-3 w-full max-w-xs">
-                    <div className="w-full h-32 bg-gradient-to-br from-violet-400 to-purple-600 rounded flex items-center justify-center text-4xl">
-                      🏠
-                    </div>
-                    <div className="text-[#b9bbbe] text-xs mt-2">фото_ремонт_гостиная.jpg</div>
-                  </div>
-                </div>
-              </div>
-
               {/* Блок с функциями */}
               <div className="bg-[#2f3136] border border-[#202225] rounded-lg p-3 sm:p-4 max-w-lg">
                 <h3 className="text-white font-semibold mb-3 text-sm sm:text-base flex items-center gap-2">
@@ -387,10 +385,21 @@ const Index = () => {
             {/* Поле ввода сообщения */}
             <div className="p-2 sm:p-4">
               <div className="bg-[#40444b] rounded-lg px-3 sm:px-4 py-2 sm:py-3 flex items-center gap-3">
-                <div className="text-[#72767d] text-xs sm:text-sm flex-1">Написать в #наша-семья...</div>
+                <input
+                  className="bg-transparent flex-1 text-white text-xs sm:text-sm outline-none placeholder-[#72767d]"
+                  placeholder="Написать в #наша-семья..."
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                />
                 <div className="flex items-center gap-2 text-[#b9bbbe]">
-                  <Image className="w-4 h-4 cursor-pointer hover:text-[#dcddde]" />
                   <Smile className="w-4 h-4 cursor-pointer hover:text-[#dcddde]" />
+                  <button
+                    onClick={sendMessage}
+                    className="w-7 h-7 bg-[#5865f2] hover:bg-[#4752c4] rounded flex items-center justify-center transition-colors"
+                  >
+                    <ArrowRight className="w-4 h-4 text-white" />
+                  </button>
                 </div>
               </div>
             </div>
